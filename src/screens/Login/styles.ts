@@ -1,7 +1,8 @@
 import styled from "styled-components/native";
 import { RFValue } from "react-native-responsive-fontsize";
 
-export const Container = styled.View``;
+export const Container = styled.View`
+`;
 
 export const ContentHeader = styled.View`
     align-items: center;
@@ -12,7 +13,7 @@ export const ContentHeader = styled.View`
 export const Title = styled.Text`
     text-align: center;
     font-size: ${RFValue(30)}px;
-    margin-top: ${RFValue(40)}px;
+    margin-top: ${RFValue(130)}px;
     font-family: ${({ theme }) => theme.FONTS.POPPINSMEDIUM};
 `;
 

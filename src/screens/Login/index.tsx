@@ -1,5 +1,6 @@
 import React from 'react';
 import { SafeAreaView } from 'react-native';
+import { TextInput, View, StyleSheet, Button } from 'react-native';
 
 import {
     Container,
@@ -10,7 +11,6 @@ import {
     ContentBody,
     ContentFooter
 } from "./styles";
-import { Input } from '../../components/Input';
 
 const Login: React.FC = () => {
     return (
@@ -21,20 +21,38 @@ const Login: React.FC = () => {
 
                     <Description>Faça o login</Description>
                     
-                    <ViewButton></ViewButton>
                 </ContentHeader>
 
                 <ContentBody>
-                    <Input name={'a'} />
+                <TextInput
+                    style={styles.input}
+                    placeholder="E-mail"
+                />
+                 <TextInput
+                    style={styles.input}
+                    placeholder="Senha"
+                />
                 </ContentBody>
 
                 <ContentFooter>
-
+                    <Button title="Entrar"/>
                 </ContentFooter>
             </Container>
         </SafeAreaView>
-      
     );
 }
+
+const styles = StyleSheet.create({
+    input: {
+      width: '80%',
+      height: 60,
+      borderWidth: 1,
+      borderColor: 'gray',
+      paddingHorizontal: 10,
+      marginBottom: 20,
+      borderRadius: 30,
+      paddingLeft: 30
+    },
+  });
 
 export default Login; 
