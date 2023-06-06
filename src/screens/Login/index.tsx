@@ -1,7 +1,6 @@
 import React from 'react';
-import { SafeAreaView, Text } from 'react-native';
+import { SafeAreaView } from 'react-native';
 
-import { Input } from ".././../components/Input/Input"
 import {
     Container,
     ContentHeader,
@@ -11,6 +10,7 @@ import {
     ContentBody,
     ContentFooter
 } from "./styles";
+import { Input } from '../../components/Input';
 
 const Login: React.FC = () => {
     return (
@@ -25,7 +25,7 @@ const Login: React.FC = () => {
                 </ContentHeader>
 
                 <ContentBody>
-                    <Input name='gabs'/>
+                    <Input name={'a'} />
                 </ContentBody>
 
                 <ContentFooter>
@@ -37,4 +37,4 @@ const Login: React.FC = () => {
     );
 }
 
-export { Login }; 
+export default Login; 
