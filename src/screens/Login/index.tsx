@@ -18,16 +18,15 @@ const Login: React.FC = () => {
             <Container>
                 <ContentHeader>
                     <Title>LEMON</Title>
-
-                    <Description>Faça o login</Description>
-                    
                 </ContentHeader>
 
                 <ContentBody>
+                <Description>E-mail</Description>
                 <TextInput
                     style={styles.input}
                     placeholder="E-mail"
                 />
+                <Description>Senha</Description>
                  <TextInput
                     style={styles.input}
                     placeholder="Senha"

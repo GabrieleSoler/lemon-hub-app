@@ -13,13 +13,16 @@ export const ContentHeader = styled.View`
 export const Title = styled.Text`
     text-align: center;
     font-size: ${RFValue(30)}px;
-    margin-top: ${RFValue(130)}px;
+    margin-top: ${RFValue(110)}px;
+    margin-bottom: ${RFValue(50)}px;
     font-family: ${({ theme }) => theme.FONTS.POPPINSMEDIUM};
 `;
 
-export const Description = styled.Text`
-    margin-top: ${RFValue(60)}px;    
-    font-size: ${RFValue(17)}px;
+export const Description = styled.Text`    
+    font-size: ${RFValue(15)}px;
+    padding-left: 65px;
+    padding-bottom: 10px;
+    align-self: flex-start;
     font-family: ${({ theme }) => theme.FONTS.POPPINSLIGHT};
 `;
 
