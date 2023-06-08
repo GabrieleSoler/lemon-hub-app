@@ -1,7 +1,8 @@
 import { StatusBar } from 'expo-status-bar';
+import { View } from "react-native";
 import React from "react";
 import AppLoading from "expo-app-loading";
-import { ThemeProvider } from "styled-components/native"
+import { ThemeProvider } from "styled-components/native";
 
 import {
   useFonts,
@@ -10,14 +11,14 @@ import {
   Poppins_500Medium,
   Poppins_700Bold,
   Poppins_800ExtraBold
-} from "@expo-google-fonts/poppins"
+} from "@expo-google-fonts/poppins";
 
-import { DMSans_400Regular } from "@expo-google-fonts/dm-sans"
-import { DMSerifDisplay_400Regular } from "@expo-google-fonts/dm-serif-display"
+import { DMSans_400Regular } from "@expo-google-fonts/dm-sans";
+import { DMSerifDisplay_400Regular } from "@expo-google-fonts/dm-serif-display";
 
-import COLORS from "./src/styles/theme"
+import COLORS from "./src/styles/theme";
 
-// import Login from "./src/screens/Login";
+import Login from "./src/screens/Login";
 import Main from './src/screens/Main';
 
 export default function App() {
@@ -37,11 +38,11 @@ export default function App() {
 
   return (
     <ThemeProvider theme={COLORS}>
-      <Main />
-        <StatusBar style='dark' translucent backgroundColor='transparent' />
-        {/* <View>
+      <StatusBar style='dark' translucent backgroundColor='transparent' />
+      {/* <Main/> // TODO: Habilitar na implementação das routes */}
+        <View>
           <Login />
-        </View>  */}
+        </View>
    </ThemeProvider>
   );
 }
