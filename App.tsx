@@ -1,7 +1,6 @@
 import { StatusBar } from 'expo-status-bar';
 import React from "react";
 import AppLoading from "expo-app-loading";
-import { View } from 'react-native';
 import { ThemeProvider } from "styled-components/native"
 
 import {
@@ -18,7 +17,8 @@ import { DMSerifDisplay_400Regular } from "@expo-google-fonts/dm-serif-display"
 
 import COLORS from "./src/styles/theme"
 
-import Login from "./src/screens/Login";
+// import Login from "./src/screens/Login";
+import Main from './src/screens/Main';
 
 export default function App() {
   const [fontsLoaded] = useFonts({
@@ -37,11 +37,12 @@ export default function App() {
 
   return (
     <ThemeProvider theme={COLORS}>
-      <StatusBar style='dark' translucent backgroundColor='transparent' />
-      <View>
-        <Login />
-      </View>
-    </ThemeProvider>
+      <Main />
+        <StatusBar style='dark' translucent backgroundColor='transparent' />
+        {/* <View>
+          <Login />
+        </View>  */}
+   </ThemeProvider>
   );
 }
 
