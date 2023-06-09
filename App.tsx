@@ -1,5 +1,5 @@
 import { StatusBar } from 'expo-status-bar';
-import { View } from "react-native";
+import { ScrollView, View } from "react-native";
 import React from "react";
 import AppLoading from "expo-app-loading";
 import { ThemeProvider } from "styled-components/native";
@@ -39,7 +39,11 @@ export default function App() {
   return (
     <ThemeProvider theme={COLORS}>
       <StatusBar style='dark' translucent backgroundColor='transparent' />
-      {/* <Main/> // TODO: Habilitar na implementação das routes */}
+        {/*// TODO: Habilitar na implementação das routes
+        <ScrollView style={{backgroundColor:'#e4e4e4'}} >
+          <Main/>    
+        </ScrollView >
+        */}
         <View>
           <Login />
         </View>
