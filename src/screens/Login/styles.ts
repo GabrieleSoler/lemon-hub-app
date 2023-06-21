@@ -15,7 +15,6 @@ export const Title = styled.Text`
     font-size: ${RFValue(30)}px;
     margin-top: ${RFValue(110)}px;
     margin-bottom: ${RFValue(50)}px;
-    font-family: ${({ theme }) => theme.FONTS.POPPINSMEDIUM};
 `;
 
 export const Description = styled.Text`    
@@ -23,7 +22,6 @@ export const Description = styled.Text`
     padding-left: 65px;
     padding-bottom: 10px;
     align-self: flex-start;
-    font-family: ${({ theme }) => theme.FONTS.POPPINSLIGHT};
 `;
 
 export const ViewButton = styled.View``;
