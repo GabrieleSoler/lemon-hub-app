@@ -40,11 +40,11 @@ export default function Main() {
     fetchContas();
   }, []);
 
-  const handleAnswerChange = (text, pergunta) => {
+  const handleAnswerChange = (text: any, pergunta: any) => {
     setRespostas(prevState => ({ ...prevState, [pergunta.id]: { text: text, question: pergunta } }));
   }
   
-  const handleAnswerSubmit = (perguntaId) => {
+  const handleAnswerSubmit = (perguntaId: any) => {
     const answer = respostas[perguntaId];
     const accountId = selectedAccount;
   
@@ -82,6 +82,7 @@ export default function Main() {
 
   const handleValueChange = (itemValue: any, page: number) => {
     setSelectedAccount(itemValue);
+    setPerguntas([]); // Limpe o estado das perguntas
     const selectedAcc = contas.find((conta) => conta.id === Number(itemValue));
     console.log(selectedAcc);
 
@@ -89,11 +90,10 @@ export default function Main() {
     const offset = (page - 1) * limit;
     const filtros = {
       status: "UNANSWERED",
-      limit: limit,
       offset: offset
     };
 
-    const perguntasList = api.post(`/meli/perguntas2/${selectedAcc?.id}/`, filtros).then(
+    const perguntasList = api.post(`/meli/perguntas2/${selectedAcc?.id}/?limit=${limit}`, filtros).then(
       (response) => {
         setPerguntas(response.data.questions);
         setTotalPages(Math.ceil(response.data.total / limit));
@@ -154,7 +154,9 @@ export default function Main() {
         </View>
       ))}
 
-      <Button 
+
+        {currentPage > 1 && (  // Mostrar o botão "Anterior" somente se a página atual for maior que 1
+            <Button 
               title="Anterior"
               onPress={() => {
                 if (currentPage > 1) {
@@ -162,6 +164,9 @@ export default function Main() {
                 }
               }}
             />
+          )}
+
+          {currentPage < totalPages && (  // Mostrar o botão "Próximo" somente se a página atual for menor que o total de páginas
             <Button 
               title="Próximo"
               onPress={() => {
@@ -170,6 +175,7 @@ export default function Main() {
                 }
               }}
             />
+          )}
     </ScrollView>
   );
 }
