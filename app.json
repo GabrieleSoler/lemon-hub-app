@@ -12,18 +12,16 @@
     "assetBundlePatterns": [
       "assets/*"
     ],
+    "web": {},
+    "extra": {
+      "eas": {
+        "projectId": "a4cb20b8-506a-4faa-98d7-930e7f1b2b12"
+      }
+    },
     "android": {
+      "package": "com.lucasnuernberg.lemon",
       "googleServicesFile": "./google-services.json"
-    },
-    "ios": {
-      "googleServicesFile": "./GoogleService-Info.plist"
-    },
-    "plugins": [
-      "@react-native-firebase/app",
-      "@react-native-firebase/perf",
-      "@react-native-firebase/crashlytics"
-    ],
-    "web": {
+
     }
   }
 }

@@ -1,0 +1,63 @@
+{
+  "project_info": {
+    "project_number": "901970700661",
+    "firebase_url": "https://lemon-hub-default-rtdb.firebaseio.com",
+    "project_id": "lemon-hub",
+    "storage_bucket": "lemon-hub.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:901970700661:android:0fe61143f4dec8ab188b3c",
+        "android_client_info": {
+          "package_name": "com.lucasnuernberg.lemon"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "901970700661-dc13vguuaj3ecvaeqfbqm6843ukjb8mc.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.lucasnuernberg.lemon",
+            "certificate_hash": "a3a1ace29f13968fff5cb2626d3db052cd82fbb9"
+          }
+        },
+        {
+          "client_id": "901970700661-jug1nad9v8o264gnuhr9rfaom4ld99t4.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.lucasnuernberg.lemon",
+            "certificate_hash": "e5f0878ebaf751d52f2c63d8b6d7fa8d2a989738"
+          }
+        },
+        {
+          "client_id": "901970700661-6r5itech0ae1qo6jie3lr7g688ukc1hq.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCG9qofgbOaqJQ17wNglf5XeEymc5bw9Wo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "901970700661-6r5itech0ae1qo6jie3lr7g688ukc1hq.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "901970700661-k2b7oqmp214aj0hbkg3oe37mfc1q52rh.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "lemonhub"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
