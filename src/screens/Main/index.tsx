@@ -1,8 +1,9 @@
-import { Text, View, StyleSheet, Image, ScrollView, TextInput, Button } from "react-native";
+import { Text, View, StyleSheet, Image, ScrollView, TextInput, Button, Modal, TouchableHighlight } from "react-native";
 import {Ionicons} from '@expo/vector-icons';
 import { useEffect, useState } from "react";
 import api from "../../service/api";
 import { Picker } from '@react-native-picker/picker';
+import Message from "../../components/Mensagem";
 
 
 interface Conta {
@@ -25,6 +26,10 @@ export default function Main() {
   const [selectedAccount, setSelectedAccount] = useState();
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
+  const [isModalVisible, setModalVisible] = useState(false);
+  const [selectedConversations, setSelectedConversations] = useState<any[]>([]);
+
+
 
   useEffect (() => {
     const fetchContas = async () => {
@@ -89,7 +94,7 @@ export default function Main() {
     const limit = 5;
     const offset = (page - 1) * limit;
     const filtros = {
-      status: "UNANSWERED",
+      status: "ANSWERED",
       offset: offset
     };
 
@@ -106,8 +111,47 @@ export default function Main() {
     );
   }
 
+  const handleConversasAnteriores = (pergunta: any) => {
+    setSelectedConversations(pergunta.conversas_anteriores);
+    setModalVisible(true);
+  };
 
-    return ( 
+
+    return (
+      <>
+
+        <Modal
+          animationType="slide"
+          transparent={true}
+          visible={isModalVisible}
+          onRequestClose={() => {
+            setModalVisible(!isModalVisible);
+          }}
+        >
+          <View style={styles.centeredView}>
+            <View style={styles.modalView}>
+              <ScrollView>
+                {selectedConversations.map((conversa, index) => (
+                  <View key={index}>
+                    <Message message={conversa.text} isSeller={false} />
+                    {conversa.answer && <Message message={conversa.answer.text} isSeller={true} />}
+                  </View>
+                ))}
+              </ScrollView>
+
+              <TouchableHighlight
+                style={{ ...styles.openButton, backgroundColor: "#2196F3" }}
+                onPress={() => {
+                  setModalVisible(!isModalVisible);
+                }}
+              >
+                <Text style={styles.textStyle}>Fechar Modal</Text>
+              </TouchableHighlight>
+            </View>
+          </View>
+        </Modal>
+
+
       <ScrollView style={styles.mainContainer}>
       <View style={styles.header}>
         <Image source={require('../../assets/logo.png')} style={styles.logo} />
@@ -134,6 +178,10 @@ export default function Main() {
           <Image source={{ uri: pergunta.link_img }} style={styles.cardImage} />
           <Text>{pergunta.text}</Text>
 
+          {pergunta.conversas_anteriores && (
+              <Button title="Conversas Anteriores" onPress={() => handleConversasAnteriores(pergunta)} />
+          )}
+
           
           {pergunta.status === 'UNANSWERED' ? (
             <>
@@ -147,9 +195,11 @@ export default function Main() {
             </>
           ) : (
 
-            <Text>Aqui vai dar bom</Text>
+            <Text>Caso seja respondida</Text>
 
           )}
+
+
 
         </View>
       ))}
@@ -177,6 +227,7 @@ export default function Main() {
             />
           )}
     </ScrollView>
+    </>
   );
 }
 
@@ -241,5 +292,40 @@ const styles = StyleSheet.create({
     width: 100,
     height: 100,
     resizeMode: 'cover'
+  },centeredView: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    marginTop: 22
+  },
+  modalView: {
+    margin: 20,
+    backgroundColor: "white",
+    borderRadius: 20,
+    padding: 35,
+    alignItems: "center",
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5
+  },
+  openButton: {
+    backgroundColor: "#F194FF",
+    borderRadius: 20,
+    padding: 10,
+    elevation: 2
+  },
+  textStyle: {
+    color: "white",
+    fontWeight: "bold",
+    textAlign: "center"
+  },
+  modalText: {
+    marginBottom: 15,
+    textAlign: "center"
   }
 });

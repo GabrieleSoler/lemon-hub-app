@@ -13,8 +13,20 @@
       "assets/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "lemonhub",
+      "googleServicesFile": "./GoogleService-Info.plist",
+      "infoPlist": {
+         "UIBackgroundModes": [
+           "fetch",
+           "remote-notification"
+         ]
+      }
+
     },
+    "plugins": [
+      "@react-native-firebase/app"
+    ],
     "android": {
       "adaptiveIcon": {
         "backgroundColor": "#ffffff"
