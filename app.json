@@ -12,26 +12,17 @@
     "assetBundlePatterns": [
       "assets/*"
     ],
+    "android": {
+      "googleServicesFile": "./google-services.json"
+    },
     "ios": {
-      "supportsTablet": true,
-      "bundleIdentifier": "lemonhub",
-      "googleServicesFile": "./GoogleService-Info.plist",
-      "infoPlist": {
-         "UIBackgroundModes": [
-           "fetch",
-           "remote-notification"
-         ]
-      }
-
+      "googleServicesFile": "./GoogleService-Info.plist"
     },
     "plugins": [
-      "@react-native-firebase/app"
+      "@react-native-firebase/app",
+      "@react-native-firebase/perf",
+      "@react-native-firebase/crashlytics"
     ],
-    "android": {
-      "adaptiveIcon": {
-        "backgroundColor": "#ffffff"
-      }
-    },
     "web": {
     }
   }

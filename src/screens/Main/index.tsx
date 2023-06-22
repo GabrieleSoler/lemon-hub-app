@@ -77,19 +77,13 @@ export default function Main() {
         console.error(error);
       }
     }
-  
-    // Chamar a função assíncrona
     submitAnswer();
-
-  
-    console.log(obj, accountId);
   }
 
   const handleValueChange = (itemValue: any, page: number) => {
     setSelectedAccount(itemValue);
     setPerguntas([]); // Limpe o estado das perguntas
     const selectedAcc = contas.find((conta) => conta.id === Number(itemValue));
-    console.log(selectedAcc);
 
     const limit = 5;
     const offset = (page - 1) * limit;
