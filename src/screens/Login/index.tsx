@@ -12,7 +12,6 @@ import {
     ContentHeader,
     Title,
     Description,
-    ViewButton,
     ContentBody,
     ContentFooter
 } from "./styles";
@@ -50,6 +49,8 @@ const Login: React.FC = () => {
                 await AsyncStorage.setItem('@resfresh', response.data.refresh);
                 await AsyncStorage.setItem('@email', email);
                 await AsyncStorage.setItem('@pass', password);
+                await AsyncStorage.setItem('@userAvatarUrl', response.data.profile_picture);
+
 
                 api.defaults.headers['Authorization'] = `Bearer ${response.data.access}`;
                 
@@ -61,7 +62,7 @@ const Login: React.FC = () => {
                     await CreateDeviceToken(notificationToken, plataformDevice);
                 }
 
-                navigation.navigate('Home');
+                navigation.navigate('App');
 
             } else {
                 alert("Erro no login");

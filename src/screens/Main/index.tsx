@@ -1,10 +1,12 @@
-import { Text, View, StyleSheet, Image, ScrollView, TextInput, Button, Modal, TouchableHighlight } from "react-native";
+import { Text, View, StyleSheet, Image, ScrollView, TextInput, Button, Modal, TouchableHighlight, TouchableOpacity } from "react-native";
 import {Ionicons} from '@expo/vector-icons';
 import { useEffect, useState } from "react";
 import api from "../../service/api";
 import { Picker } from '@react-native-picker/picker';
 import Message from "../../components/Mensagem";
 import { useNavigation } from "@react-navigation/core";
+import NavBar from "../../components/Navbar/index";
+
 
 
 interface Conta {
@@ -32,9 +34,9 @@ export default function Main() {
   const navigation = useNavigation();
 
 
-
   useEffect (() => {
     const fetchContas = async () => {
+      setLoading(true);
       try {
           const response = await api.get('/meli/contas-perguntas/');
           setContas(response.data.results);
@@ -147,14 +149,9 @@ export default function Main() {
           </View>
         </Modal>
 
-
       
-      <View style={styles.header}>
-        <Image source={require('../../assets/logo.png')} style={styles.logo} />
-        <Text style={styles.title}>Lemon</Text>
-        <Ionicons style={styles.icons} onPress={() => { navigation.navigate('Notification') }} name="ios-notifications" size={30} color="black" />
-        <Image source={require('../../assets/avatar.jpg')} style={styles.avatar} />
-      </View>
+         <NavBar></NavBar>
+
       <ScrollView style={styles.mainContainer}>
       {!loading && contas && (
         <View>
@@ -187,7 +184,9 @@ export default function Main() {
                 value={respostas[pergunta.id]?.text || ''}
                 placeholder="Digite sua resposta aqui"
               />
-              <Button title="Responder" onPress={() => handleAnswerSubmit(pergunta.id)} />
+              <TouchableOpacity style={styles.button} onPress={() => handleAnswerSubmit(pergunta.id)}>
+                  <Text style={styles.buttonText}>Responder</Text>
+              </TouchableOpacity>
             </>
           ) : (
 
@@ -201,27 +200,27 @@ export default function Main() {
       ))}
 
 
-        {currentPage > 1 && (  // Mostrar o botão "Anterior" somente se a página atual for maior que 1
-            <Button 
-              title="Anterior"
-              onPress={() => {
-                if (currentPage > 1) {
-                  handleValueChange(selectedAccount, currentPage - 1);
-                }
-              }}
-            />
+        <View style={styles.buttonContainer}>
+          {currentPage > 1 && (
+            <TouchableOpacity style={styles.buttonPage} onPress={() => {
+              if (currentPage > 1) {
+                handleValueChange(selectedAccount, currentPage - 1);
+              }
+            }}>
+              <Text style={styles.buttonText}>Anterior</Text>
+            </TouchableOpacity>
           )}
 
-          {currentPage < totalPages && (  // Mostrar o botão "Próximo" somente se a página atual for menor que o total de páginas
-            <Button 
-              title="Próximo"
-              onPress={() => {
-                if (currentPage < totalPages) {
-                  handleValueChange(selectedAccount, currentPage + 1);
-                }
-              }}
-            />
+          {currentPage < totalPages && (
+            <TouchableOpacity style={styles.buttonPage} onPress={() => {
+              if (currentPage < totalPages) {
+                handleValueChange(selectedAccount, currentPage + 1);
+              }
+            }}>
+              <Text style={styles.buttonText}>Próximo</Text>
+            </TouchableOpacity>
           )}
+        </View>
     </ScrollView>
     </>
   );
@@ -230,37 +229,8 @@ export default function Main() {
 const styles = StyleSheet.create({
   mainContainer: {
     flex: 1,
-  },
-  header: {
-    backgroundColor: '#f2f2f2',
-    padding: 20,
-    flexDirection: 'row',
-    alignItems: 'center',
-    width: '100%',
-    marginTop: 30
-  },
-  title: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: '#333',
-    textAlign: 'left',
-    justifyContent: 'space-between',
-  },
-  logo: {
-    width: 40,
-    height: 40,
-    marginRight: 10
-  },
-  icons: {
-    marginLeft: 'auto',
-    margin: 5
-  },
-  avatar: {
-    marginLeft: 'auto',
-    width: 40,
-    height: 40,
-    margin: 0,
-    borderRadius: 20
+    padding: 10,
+    backgroundColor: '#f8f8f8'
   },
   pickerContainer: {
     alignSelf: 'stretch',
@@ -268,27 +238,62 @@ const styles = StyleSheet.create({
     backgroundColor: 'black',
     alignItems: 'center',
     justifyContent: 'center',
-    marginTop: 50, // Adicione um valor aqui que seja adequado para você
+    marginTop: 50, 
   },
   card: {
     backgroundColor: '#fff',
     marginBottom: 10,
-    margin: 20,
-    padding: 5,
-    width:'90%',
+    marginLeft: 20,
+    marginRight: 20,
+    padding: 20,
+    borderRadius: 10,
     shadowColor: "#000",
-    shadowOpacity:0.2,
-    shadowRadius:1,
+    shadowOpacity: 0.2,
+    shadowRadius: 1,
     shadowOffset:{
-        width:3,
-        height:3
+        width: 3,
+        height: 3
     }
   },
   cardImage: {
     width: 100,
     height: 100,
-    resizeMode: 'cover'
-  },centeredView: {
+    resizeMode: 'cover',
+    marginBottom: 15
+  },
+  cardTitle: {
+    fontSize: 18,
+    fontWeight: 'bold'
+  },
+  input: {
+    height: 40,
+    borderColor: 'gray',
+    borderWidth: 1,
+    marginTop: 10,
+    borderRadius: 10,
+    padding: 10,
+    shadowColor: "#000",
+    shadowOpacity: 0.2,
+    shadowRadius: 1,
+    shadowOffset:{
+        width: 1,
+        height: 1
+    },
+    backgroundColor: 'white',
+  },
+  button: {
+    marginTop: 10,
+    backgroundColor: '#4285F4',
+    padding: 10,
+    borderRadius: 10,
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
+  buttonText: {
+    color: '#fff',
+    fontSize: 16
+  },
+  centeredView: {
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
@@ -323,5 +328,18 @@ const styles = StyleSheet.create({
   modalText: {
     marginBottom: 15,
     textAlign: "center"
+  },
+  buttonContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginTop: 20,
+  },
+  buttonPage: {
+    backgroundColor: '#4285F4',
+    padding: 10,
+    borderRadius: 20,
+    width: '45%',
+    alignItems: 'center',
+    marginBottom: 20
   }
 });

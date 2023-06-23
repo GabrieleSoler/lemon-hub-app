@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { ActivityIndicator, Image, FlatList, Text, View, StyleSheet, Button } from 'react-native';
+import { ActivityIndicator, Image, FlatList, Text, View, StyleSheet, Button,  } from 'react-native';
 import api from '../../service/api';
+import NavBar from "../../components/Navbar/index";
+
 
 
 export default function NotificationScreen({ navigation  }) {
@@ -29,11 +31,9 @@ export default function NotificationScreen({ navigation  }) {
   );
 
   return (
-    
+    <>
+    <NavBar></NavBar>
     <View style={styles.container}>
-
-      <Button title="Voltar" onPress={() => navigation.goBack()} /> 
-
       {isLoading
         ? <ActivityIndicator size="large" color="#0000ff" />
         : <FlatList
@@ -46,36 +46,52 @@ export default function NotificationScreen({ navigation  }) {
             onEndReachedThreshold={0} */
           />}
     </View>
+
+      </>
   );
 }
 
-NotificationScreen.navigationOptions = ({ navigation }) => ({
-  headerTitle: "Notificações",
-  headerLeft: () => (
-    <Button
-      onPress={() => navigation.goBack()}
-      title="Voltar"
-      color="#000"
-    />
-  ),
-  headerStyle: {
-    backgroundColor: '#f4511e',
-  },
-  headerTintColor: '#fff',
-  headerTitleStyle: {
-    fontWeight: 'bold',
-  },
-});
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#fff',
   },
+  header: {
+    backgroundColor: '#f2f2f2',
+    padding: 20,
+    flexDirection: 'row',
+    alignItems: 'center',
+    width: '100%',
+    marginTop: 30
+  },
+  title: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#333',
+    textAlign: 'left',
+    justifyContent: 'space-between',
+  },
+  logo: {
+    width: 40,
+    height: 40,
+    marginRight: 10
+  },
+  icons: {
+    marginLeft: 'auto',
+    margin: 5
+  },
+  avatar: {
+    marginLeft: 'auto',
+    width: 40,
+    height: 40,
+    margin: 0,
+    borderRadius: 20
+  },
   notificationCard: {
     flexDirection: 'row',
     backgroundColor: '#f2f2f2',
-    marginBottom: 10,
+    marginTop: 10,
     marginHorizontal: 20,
     padding: 10,
     borderRadius: 8,
