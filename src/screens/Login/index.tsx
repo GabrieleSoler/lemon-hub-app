@@ -22,6 +22,25 @@ const Login: React.FC = () => {
     const [password, setPassword] = useState('');
     const navigation = useNavigation();
 
+    async function CreateDeviceToken(device_token: string, plataform: string) {
+        try {
+            let obj = {
+                device_token: device_token,
+                platform: plataform,
+            };
+            await api
+                .post("/meli/devices/", obj)
+                .then((res) => {
+                    console.log(res.data);
+                })
+                .catch((error) => {
+                    console.log("catch do create device " + error);
+                });
+        } catch (error: any) {
+            console.log(error);
+        }
+    }
+
     async function handleLogin() {
         try {
             const response = await api.post('/authentication/login/', { email, password });
@@ -33,6 +52,14 @@ const Login: React.FC = () => {
                 await AsyncStorage.setItem('@pass', password);
 
                 api.defaults.headers['Authorization'] = `Bearer ${response.data.access}`;
+                
+                const notificationToken = await AsyncStorage.getItem('@notification_token');
+                const plataformDevice = await AsyncStorage.getItem('@plataformDevice');
+
+                if (notificationToken && plataformDevice) {
+                    // Substitua esta parte com a lógica de enviar o token para o seu servidor
+                    await CreateDeviceToken(notificationToken, plataformDevice);
+                }
 
                 navigation.navigate('Home');
 

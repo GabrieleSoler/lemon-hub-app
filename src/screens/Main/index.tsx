@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import api from "../../service/api";
 import { Picker } from '@react-native-picker/picker';
 import Message from "../../components/Mensagem";
+import { useNavigation } from "@react-navigation/core";
 
 
 interface Conta {
@@ -28,6 +29,7 @@ export default function Main() {
   const [totalPages, setTotalPages] = useState(1);
   const [isModalVisible, setModalVisible] = useState(false);
   const [selectedConversations, setSelectedConversations] = useState<any[]>([]);
+  const navigation = useNavigation();
 
 
 
@@ -88,7 +90,7 @@ export default function Main() {
     const limit = 5;
     const offset = (page - 1) * limit;
     const filtros = {
-      status: "ANSWERED",
+      status: "UNANSWERED",
       offset: offset
     };
 
@@ -146,14 +148,14 @@ export default function Main() {
         </Modal>
 
 
-      <ScrollView style={styles.mainContainer}>
+      
       <View style={styles.header}>
         <Image source={require('../../assets/logo.png')} style={styles.logo} />
         <Text style={styles.title}>Lemon</Text>
-        <Ionicons style={styles.icons} name="ios-notifications" size={30} color="black" />
+        <Ionicons style={styles.icons} onPress={() => { navigation.navigate('Notification') }} name="ios-notifications" size={30} color="black" />
         <Image source={require('../../assets/avatar.jpg')} style={styles.avatar} />
       </View>
-
+      <ScrollView style={styles.mainContainer}>
       {!loading && contas && (
         <View>
           <Picker

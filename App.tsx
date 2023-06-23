@@ -1,32 +1,71 @@
 import React, { useEffect } from 'react';
 import AppNavigator from './src/navigation/AppNavigator';
-import { Alert } from 'react-native';
-import messaging from '@react-native-firebase/messaging';
+import * as Notifications from 'expo-notifications';
+import Constants from 'expo-constants';
+import { Platform } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import Toast from 'react-native-toast-message';
 
-/* async function requestUserPermission() {
-  const authStatus = await messaging().requestPermission();
-  const enabled =
-    authStatus === messaging.AuthorizationStatus.AUTHORIZED ||
-    authStatus === messaging.AuthorizationStatus.PROVISIONAL;
 
-  if (enabled) {
-    console.log('Authorization status:', authStatus);
-  }
-}
- */
-function App() {
-  /* useEffect(() => {
-    requestUserPermission();
-
-    
-    const unsubscribe = messaging().onMessage(async (remoteMessage) => {
-      Alert.alert('A new FCM message arrived!');
-      console.log(JSON.stringify(remoteMessage));
+export default function App() {
+  useEffect(() => {
+    registerForPushNotificationsAsync().then(token => console.log(token));
+  
+    const foregroundSubscription = Notifications.addNotificationReceivedListener(notification => {
+      console.log(notification);
+      Toast.show({
+        type: 'success',
+        text1: 'Nova notificação',
+        text2: 'Você recebeu uma nova notificação'
+      });
     });
-    return unsubscribe;
-  }, []); */
+  
+    const backgroundSubscription = Notifications.addNotificationResponseReceivedListener(response => {
+      console.log(response);
+    });
+  
+
+    return () => {
+      foregroundSubscription.remove();
+      backgroundSubscription.remove();
+    };
+  }, []);
 
   return <AppNavigator />;
 }
 
-export default App;
+async function registerForPushNotificationsAsync() {
+  let token;
+  if (Constants.isDevice) {
+    console.log(Platform.OS)
+    await AsyncStorage.setItem('@plataformDevice', Platform.OS);
+    const { status: existingStatus } = await Notifications.getPermissionsAsync();
+    let finalStatus = existingStatus;
+    if (existingStatus !== 'granted') {
+      const { status } = await Notifications.requestPermissionsAsync();
+      finalStatus = status;
+    }
+    if (finalStatus !== 'granted') {
+      alert('Failed to get push token for push notification!');
+      return;
+    }
+    token = (await Notifications.getExpoPushTokenAsync()).data;
+
+    await AsyncStorage.setItem('@notification_token', token);
+
+  } else {
+    alert('Must use physical device for Push Notifications');
+  }
+
+  if (Platform.OS === 'android') {
+    
+    Notifications.setNotificationChannelAsync('default', {
+      name: 'default',
+      importance: Notifications.AndroidImportance.MAX,
+      vibrationPattern: [0, 250, 250, 250],
+      lightColor: '#FF231F7C',
+    });
+  }
+
+  return token;
+}
