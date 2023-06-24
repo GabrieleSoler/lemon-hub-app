@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from 'react';
-import { ActivityIndicator, Image, FlatList, Text, View, StyleSheet, Button,  } from 'react-native';
+import { ActivityIndicator, Image, FlatList, Text, View, StyleSheet, Button } from 'react-native';
 import api from '../../service/api';
-import NavBar from "../../components/Navbar/index";
+import NavBar from '../../components/Navbar/index';
 
-
-
-export default function NotificationScreen({ navigation  }) {
+export default function NotificationScreen({ navigation }) {
   const [notifications, setNotifications] = useState([]);
   const [isLoading, setLoading] = useState(true);
+  const [notificationStatus, setNotificationStatus] = useState(false);
+  const [notReadNotificationsIds, setNotReadNotificationsIds] = useState([]);
 
   useEffect(() => {
     fetchNotifications();
@@ -16,41 +16,58 @@ export default function NotificationScreen({ navigation  }) {
   const fetchNotifications = async () => {
     setLoading(true);
     const response = await api.get('/meli/notifications/');
-    
+
     if (response) {
       setNotifications(response.data);
+
+      const notReadIds = response.data
+        .filter(notification => !notification.is_read)
+        .map(notification => notification.id);
+      setNotReadNotificationsIds(notReadIds);
     }
     setLoading(false);
-  }
+  };
 
-  const renderNotification = ({ item }) => (
-    <View style={styles.notificationCard}>
-      <Image source={{ uri: item.extra_data.thumbnail }} style={styles.cardImage} />
-      <Text style={styles.notificationText}>{item.message}</Text>
-    </View>
-  );
+  const renderNotification = ({ item }) => {
+    const notificationCardStyles = [
+      styles.notificationCard,
+      notReadNotificationsIds.includes(item.id) && { backgroundColor: '#dcdcdc' },
+    ];
+
+    return (
+      <View style={notificationCardStyles}>
+        <Image source={{ uri: item.extra_data.thumbnail }} style={styles.cardImage} />
+        <Text style={styles.notificationText}>{item.message}</Text>
+      </View>
+    );
+  };
 
   return (
     <>
-    <NavBar></NavBar>
-    <View style={styles.container}>
-      {isLoading
-        ? <ActivityIndicator size="large" color="#0000ff" />
-        : <FlatList
+      <NavBar />
+      <Button
+        title="Marcar todas como lidas"
+        onPress={() => {
+          const response = api.put(`/meli/read_notifications/`,{ notification_ids: notReadNotificationsIds });
+          fetchNotifications();
+        }}
+      />
+      <View style={styles.container}>
+        {isLoading ? (
+          <ActivityIndicator size="large" color="#0000ff" style={styles.spinner}/>
+        ) : (
+          <FlatList
             data={notifications}
             renderItem={renderNotification}
             keyExtractor={(item, index) => index.toString()}
             refreshing={isLoading}
             onRefresh={fetchNotifications}
-/*             onEndReached={fetchNotifications}
-            onEndReachedThreshold={0} */
-          />}
-    </View>
-
-      </>
+          />
+        )}
+      </View>
+    </>
   );
 }
-
 
 const styles = StyleSheet.create({
   container: {
@@ -63,7 +80,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     width: '100%',
-    marginTop: 30
+    marginTop: 30,
   },
   title: {
     fontSize: 18,
@@ -75,18 +92,18 @@ const styles = StyleSheet.create({
   logo: {
     width: 40,
     height: 40,
-    marginRight: 10
+    marginRight: 10,
   },
   icons: {
     marginLeft: 'auto',
-    margin: 5
+    margin: 5,
   },
   avatar: {
     marginLeft: 'auto',
     width: 40,
     height: 40,
     margin: 0,
-    borderRadius: 20
+    borderRadius: 20,
   },
   notificationCard: {
     flexDirection: 'row',
@@ -105,4 +122,7 @@ const styles = StyleSheet.create({
   notificationText: {
     flex: 1,
   },
+  spinner: {
+    marginTop: 225
+  }
 });

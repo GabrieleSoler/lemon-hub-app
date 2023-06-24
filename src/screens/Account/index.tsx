@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Text, View, StyleSheet, Image, FlatList } from 'react-native';  // Import FlatList
+import { Text, View, StyleSheet, Image, FlatList, ActivityIndicator } from 'react-native';
 import api from '../../service/api';
 import NavBar from "../../components/Navbar/index";
 
@@ -28,39 +28,43 @@ export default function Account() {
     // Formatar a data
     const dataCriacao = new Date(item.data_criacao);
     const formattedDataCriacao = `${dataCriacao.getDate()}/${dataCriacao.getMonth() + 1}/${dataCriacao.getFullYear()}`;
-  
+
     // Definir imagem padrão caso não exista link_img
-    const imagemConta = item.link_img 
-      ? { uri: item.link_img } 
+    const imagemConta = item.link_img
+      ? { uri: item.link_img }
       : require('../../assets/perfil.png'); // Substitua pelo caminho real da sua imagem padrão
-  
+
     return (
       <View style={styles.contaContainer}>
         <Image source={imagemConta} style={styles.contaImage} />
-        <Text style={styles.contaText}>{item.nickname}</Text>
-        <Text style={styles.contaText}>{formattedDataCriacao}</Text>
+        <View style={styles.contaInfo}>
+          <Text style={styles.contaNickname}>{item.nickname}</Text>
+          <Text style={styles.contaData}>{formattedDataCriacao}</Text>
+        </View>
       </View>
     );
   };
 
   if (isLoading) {
-    return <Text>Loading...</Text>
+    return  <ActivityIndicator size="large" color="#0000ff" style={styles.spinnerContainer}/>
+
   }
 
   return (
     <>
       <NavBar />
       <View style={styles.container}>
-        <Image source={{uri: account.profile_picture}} style={styles.avatar} />
         <Text style={styles.name}>{account.first_name} {account.last_name}</Text>
         <Text style={styles.email}>{account.email}</Text>
 
-        {/* Lista de contas */}
+        <Text style={styles.heading}>Contas Conectadas</Text>
+
         <FlatList
           data={contas}
           renderItem={renderConta}
-          keyExtractor={item => item.id.toString()}  // Substitua "id" pela chave primária apropriada do item
+          keyExtractor={item => item.id.toString()}
           contentContainerStyle={styles.contaList}
+          style={styles.flatlist}
         />
       </View>
     </>
@@ -95,21 +99,43 @@ const styles = StyleSheet.create({
     color: '#333',
     marginTop: 10
   },
+  heading: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    marginTop: 20,
+  },
   contaList: {
-    paddingTop: 20,  // adiciona um espaço acima da lista
+    paddingTop: 20,
   },
   contaContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
     padding: 10,
     borderBottomWidth: 1,
     borderBottomColor: '#ccc',
   },
-  contaText: {
+  contaInfo: {
+    flex: 1,
+    marginLeft: 10,
+  },
+  contaNickname: {
     fontSize: 18,
+    fontWeight: 'bold',
+  },
+  contaData: {
+    fontSize: 16,
   },
   contaImage: {
-    width: 50,
-    height: 50,
-    borderRadius: 25,
-    marginRight: 10,
+    width: 80,
+    height: 80,
+    borderRadius: 20,
   },
+  flatlist: {
+    width: "100%",
+  },
+  spinnerContainer: {
+    marginTop: 125,
+    justifyContent: 'center',
+    alignItems: 'center',
+  }
 });

@@ -4,18 +4,40 @@ import { StyleSheet, View, Text } from 'react-native';
 const styles = StyleSheet.create({
   sellerMessage: {
     alignSelf: 'flex-end',
-    backgroundColor: '#0f0',
+    backgroundColor: '#AEDFFA', // Azul claro
     marginBottom: 10,
     padding: 10,
     borderRadius: 10,
+    marginRight: 10,
+    marginTop: 10,
+    maxWidth: '80%',
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 1,
+    },
+    shadowOpacity: 0.20,
+    shadowRadius: 1.41,
+    elevation: 2,
   },
 
   userMessage: {
     alignSelf: 'flex-start',
-    backgroundColor: '#00f',
+    backgroundColor: '#fff', // Branco
     marginBottom: 10,
     padding: 10,
     borderRadius: 10,
+    marginLeft: 10,
+    marginTop: 10,
+    maxWidth: '80%',
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 1,
+    },
+    shadowOpacity: 0.20,
+    shadowRadius: 1.41,
+    elevation: 2,
   },
 });
 

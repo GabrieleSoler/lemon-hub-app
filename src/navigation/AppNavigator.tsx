@@ -1,19 +1,21 @@
-import React from 'react';
-import { NavigationContainer } from '@react-navigation/native';
+import React, { useContext } from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { Ionicons } from '@expo/vector-icons';
+import { NavigationContainer } from '@react-navigation/native';
+import Ionicons from '@expo/vector-icons/Ionicons';
 
 import LoginScreen from '../screens/Login/index';
 import HomeScreen from '../screens/Main/index';
 import NotificationScreen from '../screens/Notification/index';
-import AccountScreen from '../screens/Account/index'; // Adicione a tela de conta
-
+import AccountScreen from '../screens/Account/index'; 
+import NotificationContext from '../context/Notification/index';
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
 
-// Navegador de abas para o conteúdo da aplicação
 function AppContent() {
+  const notificationReceived = useContext(NotificationContext);
+  
+
   return (
     <Tab.Navigator
       screenOptions={({ route }) => ({
@@ -22,7 +24,10 @@ function AppContent() {
           if (route.name === 'Home') {
             iconName = focused ? 'home' : 'home-outline';
           } else if (route.name === 'Notificações') {
-            iconName = focused ? 'notifications' : 'notifications-outline';
+            iconName = focused
+              ? notificationReceived ? 'notifications' : 'notifications-outline'
+              : 'notifications-outline';
+            color = notificationReceived ? 'red' : color;
           } else if (route.name === 'Conta') {
             iconName = focused ? 'person' : 'person-outline';
           }
@@ -38,7 +43,7 @@ function AppContent() {
       <Tab.Screen name="Conta" component={AccountScreen} />
     </Tab.Navigator>
   );
-}
+}  // Corrigido: as duas chaves extras foram removidas.
 
 const AppNavigator = () => {
   return (
@@ -52,3 +57,4 @@ const AppNavigator = () => {
 };
 
 export default AppNavigator;
+

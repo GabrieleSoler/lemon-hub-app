@@ -1,29 +1,25 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import AppNavigator from './src/navigation/AppNavigator';
 import * as Notifications from 'expo-notifications';
 import Constants from 'expo-constants';
 import { Platform } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import Toast from 'react-native-toast-message';
-
+import { NotificationProvider } from './src/context/Notification/index';
 
 export default function App() {
+  const [notificationReceived, setNotificationReceived] = useState(false);
+
   useEffect(() => {
     registerForPushNotificationsAsync().then(token => console.log(token));
-  
+
     const foregroundSubscription = Notifications.addNotificationReceivedListener(notification => {
       console.log(notification);
-      Toast.show({
-        type: 'success',
-        text1: 'Nova notificação',
-        text2: 'Você recebeu uma nova notificação'
-      });
+      setNotificationReceived(true);
     });
-  
+
     const backgroundSubscription = Notifications.addNotificationResponseReceivedListener(response => {
       console.log(response);
     });
-  
 
     return () => {
       foregroundSubscription.remove();
@@ -31,7 +27,11 @@ export default function App() {
     };
   }, []);
 
-  return <AppNavigator />;
+  return (
+    <NotificationProvider value={notificationReceived}>
+      <AppNavigator />
+    </NotificationProvider>
+  );
 }
 
 async function registerForPushNotificationsAsync() {
