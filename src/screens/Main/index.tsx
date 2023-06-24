@@ -6,6 +6,7 @@ import { Picker } from '@react-native-picker/picker';
 import Message from "../../components/Mensagem";
 import { useNavigation } from "@react-navigation/core";
 import NavBar from "../../components/Navbar/index";
+import DropDownPicker from 'react-native-dropdown-picker';
 
 
 
@@ -26,6 +27,7 @@ export default function Main() {
   const [perguntas, setPerguntas] = useState([]);
   const [respostas, setRespostas] = useState({});
   const [contas, setContas] = useState<Conta[]>([]);
+  const [respostasPadrao, setRespostasPadrao] = useState([]);
   const [selectedAccount, setSelectedAccount] = useState();
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
@@ -35,23 +37,34 @@ export default function Main() {
 
 
   useEffect (() => {
-    const fetchContas = async () => {
-      setLoading(true);
-      try {
-          const response = await api.get('/meli/contas-perguntas/');
-          setContas(response.data.results);
-      } catch (error) {
-        console.error(error);
-      } finally {
-        setLoading(false);
-      }
-    };
+    fetchRespostasPadrao();
     fetchContas();
   }, []);
 
-  const handleAnswerChange = (text: any, pergunta: any) => {
-    setRespostas(prevState => ({ ...prevState, [pergunta.id]: { text: text, question: pergunta } }));
+
+  const fetchContas = async () => {
+    setLoading(true);
+    try {
+        const response = await api.get('/meli/contas-perguntas/');
+        setContas(response.data.results);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const fetchRespostasPadrao = async () => {
+    const response = await api.get('/meli/respostas-padrao/');
+    setRespostasPadrao(response.data.results);
+  };
+
+  const handleAnswerChange = (respostaPadraoId: any, pergunta: any) => {
+    const respostaPadrao = respostasPadrao.find((resposta) => resposta.id === respostaPadraoId);
+    const text = respostaPadrao ? respostaPadrao.texto : '';
+    setRespostas(prevState => ({ ...prevState, [pergunta.id]: { text: text, question: pergunta, respostaPadraoId: respostaPadraoId } }));
   }
+  
   
   const handleAnswerSubmit = (perguntaId: any) => {
     const answer = respostas[perguntaId];
@@ -178,12 +191,14 @@ export default function Main() {
           
           {pergunta.status === 'UNANSWERED' ? (
             <>
-              <TextInput
-                style={styles.input}
-                onChangeText={(text) => handleAnswerChange(text, pergunta)}
-                value={respostas[pergunta.id]?.text || ''}
-                placeholder="Digite sua resposta aqui"
-              />
+                <Picker
+                    selectedValue={respostas[pergunta.id]?.respostaPadraoId || ''}
+                    onValueChange={(itemValue) => handleAnswerChange(itemValue, pergunta)}
+                  >
+                    {respostasPadrao.map((respostaPadrao, index) => (
+                      <Picker.Item label={respostaPadrao.nome} value={respostaPadrao.id} key={index} />
+                    ))}
+                  </Picker>
               <TouchableOpacity style={styles.button} onPress={() => handleAnswerSubmit(pergunta.id)}>
                   <Text style={styles.buttonText}>Responder</Text>
               </TouchableOpacity>
