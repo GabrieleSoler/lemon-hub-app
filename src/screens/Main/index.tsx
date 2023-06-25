@@ -34,9 +34,8 @@ export default function Main() {
   const [selectedDefaultAnswer, setSelectedDefaultAnswer] = useState('Selecione uma resposta');
   const [key, setKey] = useState(0);
 
-
-
   useEffect (() => {
+
     fetchRespostasPadrao();
     fetchContas();
   }, []);
@@ -247,9 +246,14 @@ export default function Main() {
         </View>
       )}
 
-        {loading ?
-                <></>
-              :
+          {loading ? (
+            <></>
+          ) : (
+            perguntas.length === 0 ? (
+              < View style={styles.containerNoAsks}>
+              <Image source={require('../../assets/noasks.png')}/>
+              </View>
+            ) : (
               perguntas.map((pergunta) => (
                 <View key={pergunta.id} style={styles.card}>
                   <View style={styles.cardContent}>
@@ -260,7 +264,6 @@ export default function Main() {
                       <Text style={styles.cardDate}>{formatDate(pergunta.date_created)}</Text>
                     </View>
                   </View>
-
                   {pergunta.status === 'UNANSWERED' ? (
                     <TouchableOpacity style={styles.button} onPress={() => handleAnswerPress(pergunta)}>
                       <Text style={styles.buttonText}>Responder</Text>
@@ -270,7 +273,9 @@ export default function Main() {
                   )}
                 </View>
               ))
-            }
+            )
+          )}
+
 
 
         {loading ?
@@ -496,6 +501,13 @@ spinnerContainer: {
   marginTop: 125,
   justifyContent: 'center',
   alignItems: 'center',
+},
+containerNoAsks: {
+  marginTop: 80,
+  justifyContent: 'center',
+  alignItems: 'center',
+  alignContent: 'center',
+
 }
 
 });
