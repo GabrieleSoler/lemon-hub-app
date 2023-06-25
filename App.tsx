@@ -6,7 +6,16 @@ import { Platform } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { NotificationProvider } from './src/context/Notification/index';
 
+Notifications.setNotificationHandler({
+  handleNotification: async () => ({
+    shouldShowAlert: true,
+    shouldPlaySound: false,
+    shouldSetBadge: false,
+  }),
+});
+
 export default function App() {
+  const [notificationCount, setNotificationCount] = useState(0);
   const [notificationReceived, setNotificationReceived] = useState(false);
 
   useEffect(() => {
@@ -15,10 +24,12 @@ export default function App() {
     const foregroundSubscription = Notifications.addNotificationReceivedListener(notification => {
       console.log(notification);
       setNotificationReceived(true);
+      incrementNotificationCount();
     });
 
     const backgroundSubscription = Notifications.addNotificationResponseReceivedListener(response => {
       console.log(response);
+      incrementNotificationCount();
     });
 
     return () => {
@@ -26,6 +37,14 @@ export default function App() {
       backgroundSubscription.remove();
     };
   }, []);
+
+  const incrementNotificationCount = () => {
+    setNotificationCount(count => count + 1);
+  }
+
+  useEffect(() => {
+    Notifications.setBadgeCountAsync(notificationCount);
+  }, [notificationCount]);
 
   return (
     <NotificationProvider value={notificationReceived}>

@@ -4,9 +4,7 @@ import { useEffect, useState } from "react";
 import api from "../../service/api";
 import { Picker } from '@react-native-picker/picker';
 import Message from "../../components/Mensagem";
-import { useNavigation } from "@react-navigation/core";
 import NavBar from "../../components/Navbar/index";
-
 import ModalDropdown from 'react-native-modal-dropdown';
 
 interface Conta {
@@ -29,10 +27,13 @@ export default function Main() {
   const [selectedAccount, setSelectedAccount] = useState();
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
+  const [statusPergunta, setstatusPergunta] = useState("UNANSWERED");
   const [isAnswerModalVisible, setAnswerModalVisible] = useState(false);
   const [currentQuestion, setCurrentQuestion] = useState<any>(null);
   const [respostasPadrao, setRespostasPadrao] = useState<any>([]);
   const [selectedDefaultAnswer, setSelectedDefaultAnswer] = useState('Selecione uma resposta');
+  const [key, setKey] = useState(0);
+
 
 
   useEffect (() => {
@@ -82,12 +83,6 @@ export default function Main() {
   };
   
   const handleAnswerSubmit = (perguntaId: any) => {
-    console.log(perguntaId)
-    if (!perguntaId) {
-      
-      Alert("A sua resposta esta vazia");
-      return;
-    }
     const answer = respostas[perguntaId];
     const accountId = selectedAccount;
 
@@ -130,34 +125,43 @@ export default function Main() {
     return `${day}/${month}/${year} ${hours}:${minutes}`;
   }
 
-  const handleValueChange = async (itemValue: any, page: number) => {
+  const handleValueChange = async (itemValue: number) => {
+
     setSelectedAccount(itemValue);
-    setPerguntas([]);
-    setLoading(true);
+    setCurrentPage(1);
+
     const selectedAcc = contas.find((conta) => conta.id === Number(itemValue));
 
+    await fechtPerguntas(selectedAcc?.id);
+
+  }
+
+  const fechtPerguntas = async (conta: any) => {
+
+    setPerguntas([]);
+    setLoading(true)
     const limit = 5;
-    const offset = (page - 1) * limit;
+    const offset = (currentPage - 1) * limit;
     const filtros = {
-      status: "UNANSWERED",
+      status: statusPergunta,
       offset: offset,
       sort_fields: "date_created",
       sort_types: "DESC",
     };
 
-    const perguntasList = await api.post(`/meli/perguntas2/${selectedAcc?.id}/?limit=${limit}`, filtros).then(
+    const perguntasList = await api.post(`/meli/perguntas2/${conta}/?limit=${limit}`, filtros).then(
       (response) => {
         setPerguntas(response.data.questions);
         setTotalPages(Math.ceil(response.data.total / limit));
-        setCurrentPage(page);
       }
     ).catch(
       (erro) => {
-        console.log("Deu esse erro: ", erro);
+        console.log("Deu esse erro: ", erro.data);
       }
     ).finally(() => {
       setLoading(false);
     });
+
   }
 
     return (
@@ -196,20 +200,22 @@ export default function Main() {
                   <Text style={styles.questionText}>{currentQuestion?.text}</Text>
                 )}
               </View>
-                  <ModalDropdown
-                    options={respostasPadrao}
-                    renderRow={(option) => (
-                      <Text style={styles.dropdownText}>{option.nome}</Text>
-                    )}
-                    renderButtonText={(option) => option.nome}
-                    onSelect={(index, value) => {
-                      setSelectedDefaultAnswer(value.nome);
-                      handleAnswerChange(value.texto, currentQuestion); 
-                    }}
-                    style={styles.dropdown}
-                    dropdownStyle={styles.dropdownStyle} 
-                    defaultValue={selectedDefaultAnswer}
-                  />
+              <ModalDropdown
+                  key={key}
+                  options={respostasPadrao}
+                  renderRow={(option) => (
+                    <Text style={styles.dropdownText}>{option.nome}</Text>
+                  )}
+                  renderButtonText={(option) => option.nome}
+                  onSelect={(index, value) => {
+                    setSelectedDefaultAnswer(value.nome);
+                    handleAnswerChange(value.texto, currentQuestion); 
+                    setKey(prevKey => prevKey + 1); 
+                  }}
+                  style={styles.dropdown}
+                  dropdownStyle={styles.dropdownStyle} 
+                  defaultValue={selectedDefaultAnswer}
+              />
 
                 <TextInput
                 multiline={true}
@@ -223,7 +229,7 @@ export default function Main() {
                 </TouchableOpacity>
               </View>
             </View>
-          </Modal>
+        </Modal>
 
          <NavBar></NavBar>
 
@@ -260,7 +266,7 @@ export default function Main() {
                       <Text style={styles.buttonText}>Responder</Text>
                     </TouchableOpacity>
                   ) : (
-                    <Text>Caso seja respondida</Text>
+                    <Text>{pergunta.answer.text}</Text>
                   )}
                 </View>
               ))
@@ -277,7 +283,8 @@ export default function Main() {
             {currentPage > 1 && (
               <TouchableOpacity style={styles.buttonPage} onPress={() => {
                 if (currentPage > 1) {
-                  handleValueChange(selectedAccount, currentPage - 1);
+                  setCurrentPage(currentPage - 1);
+                  fechtPerguntas(selectedAccount);
                 }
               }}>
                 <Text style={styles.buttonText}>Anterior</Text>
@@ -287,7 +294,8 @@ export default function Main() {
             {currentPage < totalPages && (
               <TouchableOpacity style={styles.buttonPage} onPress={() => {
                 if (currentPage < totalPages) {
-                  handleValueChange(selectedAccount, currentPage + 1);
+                  setCurrentPage(currentPage + 1);
+                  fechtPerguntas(selectedAccount);
                 }
               }}>
                 <Text style={styles.buttonText}>Próximo</Text>

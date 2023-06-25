@@ -3,10 +3,11 @@ import { ActivityIndicator, Image, FlatList, Text, View, StyleSheet, Button } fr
 import api from '../../service/api';
 import NavBar from '../../components/Navbar/index';
 
+
+
 export default function NotificationScreen({ navigation }) {
   const [notifications, setNotifications] = useState([]);
   const [isLoading, setLoading] = useState(true);
-  const [notificationStatus, setNotificationStatus] = useState(false);
   const [notReadNotificationsIds, setNotReadNotificationsIds] = useState([]);
 
   useEffect(() => {
